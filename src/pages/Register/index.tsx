@@ -18,9 +18,16 @@ const SignIn: React.FC = () => (
     <Content>
       <a href="test">Invision</a>
 
-      <h1>Welcome to Invision</h1>
+      <h1>Getting Started</h1>
 
       <form>
+        <Input
+          label="Full Name"
+          name="name"
+          placeholder="Carolina Galvão dos Santos Zaglia"
+          type="text"
+        />
+
         <Input
           label="Users name or Email"
           name="name"
@@ -29,12 +36,10 @@ const SignIn: React.FC = () => (
         />
 
         <Input
-          label="Password"
+          label="Create Password"
           name="password"
           placeholder="Digite sua senha"
         />
-
-        <a href="test">Forgot password?</a>
 
         <Button type="submit">Sign In</Button>
 
@@ -46,7 +51,13 @@ const SignIn: React.FC = () => (
         </button>
 
         <div>
-          New <b>Invision</b> <Link to="/register">Create Account</Link>
+          By signing up, you agree to <b>Invision</b>{' '}
+          <a href="test">Terms of Conditions</a> and{' '}
+          <a href="test">Privacy Policy</a>
+        </div>
+
+        <div>
+          Already on <b>Invision</b>? <Link to="/">Log in</Link>
         </div>
       </form>
     </Content>
