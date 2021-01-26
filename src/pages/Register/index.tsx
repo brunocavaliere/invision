@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import * as Yup from 'yup';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -9,59 +10,86 @@ import { ReactComponent as LogoGoogleImg } from '../../assets/logo-google.svg';
 
 import { Container, Content, Background } from './styles';
 
-const SignIn: React.FC = () => (
-  <Container>
-    <Background>
-      <CarouselComponent />
-    </Background>
+interface ErrorsProps {
+  setErrors(errors: object): void;
+}
 
-    <Content>
-      <a href="test">Invision</a>
+const Register: React.FC = () => {
+  const formRef = useRef<ErrorsProps>(null);
 
-      <h1>Getting Started</h1>
+  const handleSubmit = useCallback(async (data: object) => {
+    try {
+      const schema = Yup.object().shape({
+        name: Yup.string().required('Nome obrigatório'),
+        email: Yup.string().required('Email obrigatório').email(),
+        password: Yup.string().min(6, 'No mínimo 6 digitos'),
+      });
 
-      <form>
-        <Input
-          label="Full Name"
-          name="name"
-          placeholder="Carolina Galvão dos Santos Zaglia"
-          type="text"
-        />
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+    } catch (err) {
+      formRef.current?.setErrors({
+        name: 'Nome obrigatório',
+      });
+      console.log(err);
+    }
+  }, []);
 
-        <Input
-          label="Users name or Email"
-          name="name"
-          placeholder="carolinagalvaosantos@gmail.com"
-          type="text"
-        />
+  return (
+    <Container>
+      <Background>
+        <CarouselComponent />
+      </Background>
 
-        <Input
-          label="Create Password"
-          name="password"
-          placeholder="Digite sua senha"
-        />
+      <Content>
+        <a href="test">Invision</a>
 
-        <Button type="submit">Sign In</Button>
+        <h1>Getting Started</h1>
 
-        <div className="divider">Or</div>
+        <form onSubmit={handleSubmit}>
+          <Input
+            label="Full Name"
+            name="name"
+            placeholder="Carolina Galvão dos Santos Zaglia"
+            type="text"
+          />
 
-        <button className="buttonGoogle" type="button">
-          <LogoGoogleImg />
-          Sign In with Google
-        </button>
+          <Input
+            label="Users name or Email"
+            name="name"
+            placeholder="carolinagalvaosantos@gmail.com"
+            type="text"
+          />
 
-        <div>
-          By signing up, you agree to <b>Invision</b>{' '}
-          <a href="test">Terms of Conditions</a> and{' '}
-          <a href="test">Privacy Policy</a>
-        </div>
+          <Input
+            label="Create Password"
+            name="password"
+            placeholder="Digite sua senha"
+          />
 
-        <div>
-          Already on <b>Invision</b>? <Link to="/">Log in</Link>
-        </div>
-      </form>
-    </Content>
-  </Container>
-);
+          <Button type="submit">Sign In</Button>
 
-export default SignIn;
+          <div className="divider">Or</div>
+
+          <button className="buttonGoogle" type="button">
+            <LogoGoogleImg />
+            Sign In with Google
+          </button>
+
+          <div>
+            By signing up, you agree to <b>Invision</b>{' '}
+            <a href="test">Terms of Conditions</a> and{' '}
+            <a href="test">Privacy Policy</a>
+          </div>
+
+          <div>
+            Already on <b>Invision</b>? <Link to="/">Log in</Link>
+          </div>
+        </form>
+      </Content>
+    </Container>
+  );
+};
+
+export default Register;

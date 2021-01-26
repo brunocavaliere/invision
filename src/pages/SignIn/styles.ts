@@ -40,28 +40,6 @@ export const Content = styled.div`
     max-width: 432px;
     width: 100%;
 
-    label {
-      display: flex;
-      flex-direction: column;
-
-      margin-bottom: 20px;
-
-      font: var(--BodySmall);
-      color: var(--Neutral);
-
-      input {
-        margin-top: 4px;
-        padding: 12px 20px;
-
-        border: none;
-        border-bottom: 1px solid var(--Neutral);
-
-        &::placeholder {
-          opacity: 0.48;
-        }
-      }
-    }
-
     & > a {
       margin-left: auto;
       margin-bottom: 30px;
