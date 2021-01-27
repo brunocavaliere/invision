@@ -1,6 +1,10 @@
 import React, { useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
+
+import getValidationErrors from '../../utils/getValidationErrors';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -10,29 +14,31 @@ import { ReactComponent as LogoGoogleImg } from '../../assets/logo-google.svg';
 
 import { Container, Content, Background } from './styles';
 
-interface ErrorsProps {
-  setErrors(errors: object): void;
-}
-
 const Register: React.FC = () => {
-  const formRef = useRef<ErrorsProps>(null);
+  const formRef = useRef<FormHandles>(null);
 
   const handleSubmit = useCallback(async (data: object) => {
     try {
+      formRef.current?.setErrors({});
+
       const schema = Yup.object().shape({
-        name: Yup.string().required('Nome obrigatório'),
-        email: Yup.string().required('Email obrigatório').email(),
-        password: Yup.string().min(6, 'No mínimo 6 digitos'),
+        name: Yup.string().required('Este campo não pode ser vazio'),
+        email: Yup.string()
+          .required('Este campo não pode ser vazio')
+          .email('Digite um email válido.'),
+        password: Yup.string().min(
+          6,
+          'A senha não pode ter menos de 6 caracteres',
+        ),
       });
 
       await schema.validate(data, {
         abortEarly: false,
       });
     } catch (err) {
-      formRef.current?.setErrors({
-        name: 'Nome obrigatório',
-      });
-      console.log(err);
+      const errors = getValidationErrors(err);
+
+      formRef.current?.setErrors(errors);
     }
   }, []);
 
@@ -47,7 +53,7 @@ const Register: React.FC = () => {
 
         <h1>Getting Started</h1>
 
-        <form onSubmit={handleSubmit}>
+        <Form ref={formRef} onSubmit={handleSubmit}>
           <Input
             label="Full Name"
             name="name"
@@ -57,7 +63,7 @@ const Register: React.FC = () => {
 
           <Input
             label="Users name or Email"
-            name="name"
+            name="email"
             placeholder="carolinagalvaosantos@gmail.com"
             type="text"
           />
@@ -66,6 +72,7 @@ const Register: React.FC = () => {
             label="Create Password"
             name="password"
             placeholder="Digite sua senha"
+            type="text"
           />
 
           <Button type="submit">Sign In</Button>
@@ -86,7 +93,7 @@ const Register: React.FC = () => {
           <div>
             Already on <b>Invision</b>? <Link to="/">Log in</Link>
           </div>
-        </form>
+        </Form>
       </Content>
     </Container>
   );
