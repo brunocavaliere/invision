@@ -10,11 +10,18 @@ import { useField } from '@unform/core';
 import { Container } from './styles';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  dataTestid: string;
   name: string;
   label: string;
 }
 
-const Input: React.FC<InputProps> = ({ name, label, placeholder, type }) => {
+const Input: React.FC<InputProps> = ({
+  dataTestid,
+  name,
+  label,
+  placeholder,
+  type,
+}) => {
   const inputRef = useRef(null);
   const { fieldName, defaultValue, error, registerField } = useField(name);
   const [isFocused, setIsFocused] = useState(false);
@@ -35,16 +42,16 @@ const Input: React.FC<InputProps> = ({ name, label, placeholder, type }) => {
     <Container isErrored={!!error} isFocused={isFocused} htmlFor={name}>
       {label}
       <input
+        data-testid={dataTestid}
         defaultValue={defaultValue}
         ref={inputRef}
         onFocus={() => setIsFocused(true)}
         onBlur={handleInputBlur}
-        // id={name}
         placeholder={placeholder}
         type={type}
       />
 
-      <p>{error}</p>
+      {error && <p data-testid="input-error">{error}</p>}
     </Container>
   );
 };

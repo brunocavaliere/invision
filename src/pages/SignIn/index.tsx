@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Form } from '@unform/web';
 
@@ -13,10 +13,12 @@ import CarouselComponent from '../../components/Carousel';
 
 import { ReactComponent as LogoGoogleImg } from '../../assets/logo-google.svg';
 
-import { Container, Content, Background } from './styles';
+import { Modal, Container, Content, Background } from './styles';
 
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+
+  const [isLogged, setIsLogged] = useState(false);
 
   const handleSubmit = useCallback(async (data: object) => {
     try {
@@ -35,56 +37,78 @@ const SignIn: React.FC = () => {
       await schema.validate(data, {
         abortEarly: false,
       });
+
+      setIsLogged(true);
     } catch (err) {
       const errors = getValidationErrors(err);
 
       formRef.current?.setErrors(errors);
+
+      setIsLogged(false);
     }
   }, []);
 
+  const handleModal = useCallback(() => {
+    setIsLogged(!isLogged);
+  }, [isLogged]);
+
   return (
-    <Container>
-      <Background>
-        <CarouselComponent />
-      </Background>
-
-      <Content>
-        <a href="test">Invision</a>
-
-        <h1>Welcome to Invision</h1>
-
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <Input
-            label="Users name or Email"
-            name="email"
-            placeholder="carolinagalvaosantos@gmail.com"
-            type="text"
-          />
-
-          <Input
-            label="Password"
-            name="password"
-            placeholder="Digite sua senha"
-            type="password"
-          />
-
-          <a href="test">Forgot password?</a>
-
-          <Button type="submit">Sign In</Button>
-
-          <div className="divider">Or</div>
-
-          <button className="buttonGoogle" type="button">
-            <LogoGoogleImg />
-            Sign In with Google
-          </button>
-
+    <>
+      {isLogged && (
+        <Modal data-testid="modal-signin">
           <div>
-            New <b>Invision</b> <Link to="/register">Create Account</Link>
+            <h2>Login realizado com sucesso!</h2>
+
+            <Button onClick={handleModal}>Voltar</Button>
           </div>
-        </Form>
-      </Content>
-    </Container>
+        </Modal>
+      )}
+
+      <Container>
+        <Background>
+          <CarouselComponent />
+        </Background>
+
+        <Content>
+          <a href="test">Invision</a>
+
+          <h1>Welcome to Invision</h1>
+
+          <Form data-testid="form-signin" ref={formRef} onSubmit={handleSubmit}>
+            <Input
+              dataTestid="input-email"
+              label="Users name or Email"
+              name="email"
+              placeholder="carolinagalvaosantos@gmail.com"
+              type="text"
+            />
+
+            <Input
+              dataTestid="input-password"
+              label="Password"
+              name="password"
+              placeholder="Digite sua senha"
+              type="password"
+            />
+
+            <a href="test">Forgot password?</a>
+
+            <Button type="submit">Sign In</Button>
+
+            <div className="divider">Or</div>
+
+            <button className="buttonGoogle" type="button">
+              <LogoGoogleImg />
+              Sign In with Google
+            </button>
+
+            <div>
+              New <b>Invision</b> <Link to="/register">Create Account</Link>
+            </div>
+          </Form>
+        </Content>
+      </Container>
+    </>
   );
 };
 export default SignIn;

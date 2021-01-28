@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
@@ -12,10 +12,12 @@ import CarouselComponent from '../../components/Carousel';
 
 import { ReactComponent as LogoGoogleImg } from '../../assets/logo-google.svg';
 
-import { Container, Content, Background } from './styles';
+import { Modal, Container, Content, Background } from './styles';
 
 const Register: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+
+  const [isRegistered, setIsRegistered] = useState(false);
 
   const handleSubmit = useCallback(async (data: object) => {
     try {
@@ -35,67 +37,90 @@ const Register: React.FC = () => {
       await schema.validate(data, {
         abortEarly: false,
       });
+
+      setIsRegistered(true);
     } catch (err) {
       const errors = getValidationErrors(err);
 
       formRef.current?.setErrors(errors);
+
+      setIsRegistered(false);
     }
   }, []);
 
+  const handleModal = useCallback(() => {
+    setIsRegistered(!isRegistered);
+  }, [isRegistered]);
+
   return (
-    <Container>
-      <Background>
-        <CarouselComponent />
-      </Background>
-
-      <Content>
-        <a href="test">Invision</a>
-
-        <h1>Getting Started</h1>
-
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <Input
-            label="Full Name"
-            name="name"
-            placeholder="Carolina Galvão dos Santos Zaglia"
-            type="text"
-          />
-
-          <Input
-            label="Users name or Email"
-            name="email"
-            placeholder="carolinagalvaosantos@gmail.com"
-            type="text"
-          />
-
-          <Input
-            label="Create Password"
-            name="password"
-            placeholder="Digite sua senha"
-            type="text"
-          />
-
-          <Button type="submit">Sign In</Button>
-
-          <div className="divider">Or</div>
-
-          <button className="buttonGoogle" type="button">
-            <LogoGoogleImg />
-            Sign In with Google
-          </button>
-
+    <>
+      {isRegistered && (
+        <Modal data-testid="modal-register">
           <div>
-            By signing up, you agree to <b>Invision</b>{' '}
-            <a href="test">Terms of Conditions</a> and{' '}
-            <a href="test">Privacy Policy</a>
-          </div>
+            <h2>Cadastro realizado com sucesso!</h2>
 
-          <div>
-            Already on <b>Invision</b>? <Link to="/">Log in</Link>
+            <Button onClick={handleModal}>Voltar</Button>
           </div>
-        </Form>
-      </Content>
-    </Container>
+        </Modal>
+      )}
+
+      <Container>
+        <Background>
+          <CarouselComponent />
+        </Background>
+
+        <Content>
+          <a href="test">Invision</a>
+
+          <h1>Getting Started</h1>
+
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <Input
+              dataTestid="input-name"
+              label="Full Name"
+              name="name"
+              placeholder="Carolina Galvão dos Santos Zaglia"
+              type="text"
+            />
+
+            <Input
+              dataTestid="input-email"
+              label="Users name or Email"
+              name="email"
+              placeholder="carolinagalvaosantos@gmail.com"
+              type="text"
+            />
+
+            <Input
+              dataTestid="input-password"
+              label="Create Password"
+              name="password"
+              placeholder="Digite sua senha"
+              type="password"
+            />
+
+            <Button type="submit">Sign In</Button>
+
+            <div className="divider">Or</div>
+
+            <button className="buttonGoogle" type="button">
+              <LogoGoogleImg />
+              Sign In with Google
+            </button>
+
+            <div>
+              By signing up, you agree to <b>Invision</b>{' '}
+              <a href="test">Terms of Conditions</a> and{' '}
+              <a href="test">Privacy Policy</a>
+            </div>
+
+            <div>
+              Already on <b>Invision</b>? <Link to="/">Log in</Link>
+            </div>
+          </Form>
+        </Content>
+      </Container>
+    </>
   );
 };
 

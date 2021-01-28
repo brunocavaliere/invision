@@ -1,5 +1,54 @@
 import styled from 'styled-components';
 
+export const Modal = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: fixed;
+  z-index: 20;
+
+  width: 100vw;
+  height: 100vh;
+
+  background: rgba(0, 0, 0, 0.64);
+
+  animation: bgOpacity 0.5s;
+
+  @keyframes bgOpacity {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  & div {
+    background: var(--NeutralLight);
+
+    padding: 32px 64px;
+
+    border-radius: 5px;
+
+    animation: modalUpToDown 1s;
+
+    @keyframes modalUpToDown {
+      from {
+        margin-top: -100%;
+      }
+      to {
+        margin-top: 0;
+      }
+    }
+
+    & > h3 {
+      font: var(--Heading2);
+      color: var(--NeutralDark);
+    }
+  }
+`;
+
 export const Container = styled.div`
   display: flex;
   align-items: stretch;
