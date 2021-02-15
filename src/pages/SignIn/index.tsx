@@ -70,7 +70,7 @@ const SignIn: React.FC = () => {
         </Background>
 
         <Content>
-          <a href="test">Invision</a>
+          <a href="test">invision</a>
 
           <h1>Welcome to Invision</h1>
 
